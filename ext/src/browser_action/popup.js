@@ -1,3 +1,26 @@
+'use strict';
+var includes = [
+    'ngRoute',
+    ]
+
+angular.module('ngApp', includes).
+config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider) {
+    $routeProvider.when('/', {templateUrl: 'partials/home.html', controller: 'home'});
+    $routeProvider.otherwise({redirectTo: '/'});
+}]);
+
+angular.module('ngApp.controllers', [])
+.controller('home',['$scope','$http','$cookieStore', function($scope,$http,$cookieStore){
+    //console.log("home");
+  $scope.logout = function logout(){
+        $cookieStore.remove('token');
+        location.assign('#/');
+    };
+}]);
+
+angular.module('ngApp.directives',[]);
+angular.module('ngApp.services', []);
+
 function search (query, delay) {
   delay = delay || 2000
   $('#results-list').html('');
@@ -48,6 +71,8 @@ function search (query, delay) {
 }
 
 $(document).ready(function () {
+
+
   $('.origin').html('BOS');
   $('.destination').html('SFO');
   $('#search-query').val('SFO');
@@ -60,7 +85,10 @@ $(document).ready(function () {
     search(destination);
     return false;
   });
-//return;
+
+
+return;
+
   $('#form-holder').hide();
   $('#results-holder').show();
   search('SFO', 1);
