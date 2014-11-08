@@ -1,9 +1,23 @@
-<!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Input Output Sample</title>
 </head>
 <body>
-
+	<h1>INPUT LOCATION AND DESTINATION</h1>
+	<form id="inputForm" action="flightFetch" method="post">
+		Origin:
+		<br/><input type="text" id="origin" placeholder="destination" value="bos">
+		<br/>
+		Destination:
+		<br/>
+		<input type="text" id="destination" placeholder="destination" value="dfw">
+		<br/>
+		<input type="submit" value="submit">
+	</form>
+	<br/>
+	<div id="flightList">
+	</div>
 </body>
+<script src="jquery.js"></script>
+<script src="app.js"></script>
 </html>
