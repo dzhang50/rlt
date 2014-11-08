@@ -25,6 +25,7 @@
   "permissions": [
     "https://*.facebook.com/* ",
     "http://*.facebook.com/*",
+    "geolocation",
 	"storage",
 	"unlimitedStorage",
     "webNavigation"
