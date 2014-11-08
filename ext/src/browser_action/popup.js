@@ -60,8 +60,4 @@ $(document).ready(function () {
     search(destination);
     return false;
   });
-//return;
-  $('#form-holder').hide();
-  $('#results-holder').show();
-  search('SFO', 1);
 });
