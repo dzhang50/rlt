@@ -6,7 +6,7 @@ Parse.Cloud.define("hello", function(request, response) {
 });
 
 Parse.Cloud.define("autocomplete", function(request, response) {
-	var query = request.params.query;
+	var query = encodeURIComponent(request.params.query);
 	var apiKey = "AIzaSyBCYAXektzIaR1yeYS3ul9dkf5iukc2QBU";
 	
 	// POI -> Google Place
@@ -16,15 +16,15 @@ Parse.Cloud.define("autocomplete", function(request, response) {
 			response.success(httpResponse.text);
 		},
 		error: function(httpResponse) {
-			console.error('Request failed with response code ' + httpResponse.status);
-			response.error('Request failed: ' + httpResponse.status);
+			console.error('Request 1 failed with response code ' + httpResponse.status);
+			response.error('Request 1 failed: ' + httpResponse.status);
 		}
 	});
 	
 });
 
 Parse.Cloud.define("getAirport", function(request, response) {
-	var query = request.params.query;
+	var query = encodeURIComponent(request.params.query);
 	var googKey = "AIzaSyBCYAXektzIaR1yeYS3ul9dkf5iukc2QBU";
 	var amadKey = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
 	
@@ -53,18 +53,18 @@ Parse.Cloud.define("getAirport", function(request, response) {
 							response.success(httpResponse.text);
 						},
 						error: function(httpResponse) {
-							response.error("Request failed: " + httpResponse.status);
+							response.error("Request 4 failed: " + httpResponse.status);
 						}
 					});
 				},
 				error: function(httpResponse) {
-					response.error("Request failed: " + httpResponse.status);
+					response.error("Request 3 failed: " + httpResponse.status);
 				}
 			});
 		},
 		error: function(httpResponse) {
-			console.error('Request failed with response code ' + httpResponse.status);
-			response.error('Request failed: ' + httpResponse.status);
+			console.error('Request 2 failed with response code ' + httpResponse.status);
+			response.error('Request 2 failed: ' + httpResponse.status);
 		}
 	});
 	
