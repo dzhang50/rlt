@@ -10,6 +10,15 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
 .controller('searchController',['$scope','$http','$location','passQueryInfo', function($scope,$http,$location,passQueryInfo){
   $scope.query = "TEST";
   $scope.starting = getCurrentAirport();
+
+  $(window).on('airportUpdated', function () {
+    $scope.$apply(function(){
+      $scope.starting = JSON.parse(localStorage.getItem('airport'));
+    })
+  console.log($scope.starting);
+  //$('#originLoc').val(airport.airport);
+});
+
   $scope.submit = function(){
     console.log($scope.query);
     passQueryInfo.setQuery($scope.query);
