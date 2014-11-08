@@ -2,6 +2,7 @@
 	<h1>Where do you want to go?</h1>
 	<form class="popup-form search-form" ng-submit="submit()">
 		<input id="search-query" ng-model="query" type="text" placeholder=" insert city here" />
+		<input type="hidden" ng-model="airportLoc" value="test">
 		<p class='footnote'>Searching for flights from {{starting.airport}}<span class="origin"></span> (<a href="#">change</a>)</p>
 	</form>
 </div>

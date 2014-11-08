@@ -35,10 +35,10 @@ function getCurrentAirport () {
   }
 }
 
-/*$(window).on('airportUpdated', function () {
+$(window).on('airportUpdated', function () {
   var airport = JSON.parse(localStorage.getItem('airport'));
-  $('.origin').html(airport.city_name+'.');
-});*/
+  $('#originLoc').val(airport.airport);
+});
 
 (function () {
 var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
@@ -63,11 +63,10 @@ function updateLocation (geolocation) {
         localStorage.setItem('airport', JSON.stringify(currentLocation.airport));
       }
     }
-    //$(window).trigger('airportUpdated');
+    $(window).trigger('airportUpdated');
 	});
 }
 navigator.geolocation.getCurrentPosition(updateLocation);
-
 })();
 /*
 $(document).ready(function () {
