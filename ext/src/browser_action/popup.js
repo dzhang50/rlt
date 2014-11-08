@@ -85,6 +85,7 @@ $(document).ready(function () {
     search(destination);
     return false;
   });
+<<<<<<< HEAD
 
 
 return;
@@ -92,4 +93,6 @@ return;
   $('#form-holder').hide();
   $('#results-holder').show();
   search('SFO', 1);
+=======
+>>>>>>> c96fa3efdee322568da63d5f72e90c3f6fef68e4
 });
