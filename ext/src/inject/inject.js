@@ -23,8 +23,10 @@ console.log("Testing Road Less Traveled");
 Parse.Cloud.run('getAirport', {query: "Nice"}, {
 	success: function(result) {
 		console.log("Success");
-		
+		//console.log(result);
 		var json = JSON.parse(result);
-		console.log(json.predictions[0].description+" has a place_id of "+json.predictions[0].place_id);
+		console.log(json[0].airport);
+		//console.log(json.result.geometry.location.lat+", "+json.result.geometry.location.lng);
+		//console.log(json.predictions[0].description+" has a place_id of "+json.predictions[0].place_id);
 	}
 });
