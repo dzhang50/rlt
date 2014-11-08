@@ -35,10 +35,11 @@ function getCurrentAirport () {
   }
 }
 
-$(window).on('airportUpdated', function () {
+/*$(window).on('airportUpdated', function () {
   var airport = JSON.parse(localStorage.getItem('airport'));
+  console.log(airport);
   $('#originLoc').val(airport.airport);
-});
+}); */
 
 (function () {
 var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
