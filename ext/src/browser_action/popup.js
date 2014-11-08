@@ -1,26 +1,46 @@
 'use strict';
-var includes = [
-    'ngRoute',
-    ]
 
-angular.module('ngApp', includes).
+angular.module('ngApp', ['ngRoute']).
 config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider) {
-    $routeProvider.when('/', {templateUrl: 'partials/home.html', controller: 'home'});
-    $routeProvider.otherwise({redirectTo: '/'});
+    $routeProvider.when('/search', {templateUrl: 'search.html', controller: 'searchController'});
+    $routeProvider.when('/result', {templateUrl: 'results.html', controller: 'resultController'});
+    $routeProvider.otherwise({redirectTo: '/search'});
+}])
+
+.controller('searchController',['$scope','$http','$location','passQueryInfo', function($scope,$http,$location,passQueryInfo){
+  $scope.query = "TEST";
+  $scope.starting = getCurrentAirport();
+  $scope.submit = function(){
+    console.log($scope.query);
+    passQueryInfo.setQuery($scope.query);
+    console.log(passQueryInfo.getQuery());
+    $location.path('result');
+  }
+
+
+  console.log("search");
+}])
+
+.controller('resultController',['$scope','$http','passQueryInfo', function($scope,$http,passQueryInfo){
+  console.log("result");
+  $scope.starting = getCurrentAirport();
+  $scope.query = passQueryInfo.getQuery();
+}])
+
+.service('passQueryInfo',[function() {
+  var query = null;
+    return {
+      getQuery:  function(){
+        return query;
+      },
+      setQuery:  function(value){
+        query = value;
+      }
+    }
 }]);
+//angular.module('ngApp.services', []);
 
-angular.module('ngApp.controllers', [])
-.controller('home',['$scope','$http','$cookieStore', function($scope,$http,$cookieStore){
-    //console.log("home");
-  $scope.logout = function logout(){
-        $cookieStore.remove('token');
-        location.assign('#/');
-    };
-}]);
-
-angular.module('ngApp.directives',[]);
-angular.module('ngApp.services', []);
-
+/*
 function search (query, delay) {
   delay = delay || 2000
   $('#results-list').html('');
@@ -85,7 +105,7 @@ $(document).ready(function () {
     search(destination);
     return false;
   });
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
 
 return;
@@ -93,6 +113,7 @@ return;
   $('#form-holder').hide();
   $('#results-holder').show();
   search('SFO', 1);
-=======
->>>>>>> c96fa3efdee322568da63d5f72e90c3f6fef68e4
+//=======
+//>>>>>>> c96fa3efdee322568da63d5f72e90c3f6fef68e4
 });
+*/
