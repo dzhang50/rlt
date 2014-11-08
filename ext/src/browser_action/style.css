@@ -1,0 +1,51 @@
+#mainPopup {
+	padding: 10px;
+	height: 200px;
+	width: 400px;
+	font-family: Helvetica, Ubuntu, Arial, sans-serif;
+}
+h1 {
+  text-align: center;
+	font-size: 2em;
+}
+
+a:link, a:visited {
+  color: #89c;
+  text-decoration-color: #abe;
+}
+
+#form-holder h1 {
+  margin: 1em 0 2em;
+}
+
+.search-form {
+  text-align: center;
+}
+.search-form input[type=text] {
+  font-size: 1.8em;
+  text-align: left;
+}
+
+.footnote {
+  font-size: 0.8em;
+  color: #555;
+}
+
+#results-list {
+	list-style: none;
+	padding: 0;
+}
+
+#results-list li {
+	clear: both;
+	padding: 0 0 0.6em 0;
+}
+
+#results-list li h2 {
+	clear: both;
+	float: left;
+	margin: 0;
+}
+#results-list li button {
+	float: right;
+}
