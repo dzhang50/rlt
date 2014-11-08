@@ -1,15 +1,34 @@
-	var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
-	var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?";
+//set big variables
+var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
+var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?";
 
-	$('#inputForm').submit(function(ev) {
-    	ev.preventDefault();
-    	var origin = $("#origin").val();
-    	var destination = $("#destination").val();
-    	var url = [BASE_URL,"origin=",origin,"&destination=",destination,'&departure_date=2014-11-15&return_date=2014-11-21&number_of_results=3&apikey=',API_KEY];
-    	url = url.join('');
-    	console.log(url);
-    	$.ajax({url: url})
-		.done(function( data ) {
-			console.log(data)
-		});
+//on form submission execute function
+$('#inputForm').submit(function(ev) {
+	//prevent form submission
+	ev.preventDefault();
+
+	//get variables from form
+	var origin = $("#origin").val();
+	var destination = $("#destination").val();
+
+	//create string array
+	var url = [BASE_URL,"origin=",origin,"&destination=",destination,'&apikey=',API_KEY];
+	//concat array
+	url = url.join('');
+
+	//ajax request on url
+	$.ajax({url: url})
+	.done(function( data ) {
+		console.log(data.results);
+
+		//begin injecting response into #flightList container
+		for(var i = 0;i < data.results.length; i++){
+			flight = data.results[i]
+			var fair = flight.fair.
+			html = 'yo';
+			$('#flightList').append(html);
+		}
+		
+
 	});
+});
