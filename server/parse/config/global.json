@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "RoadLessTraveled": {
+            "applicationId": "M7lfx2FsgvSMRr5pPVgpXM7lwxscDZ1oGQMfZe67", 
+            "masterKey": "1Fg6MlRokDYeFTB1gu6l3yUgu8szrcd3HUOxmBDG"
+        }, 
+        "_default": {
+            "link": "RoadLessTraveled"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.1"
+    }
+}

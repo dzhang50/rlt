@@ -10,4 +10,21 @@ chrome.extension.sendMessage({}, function(response) {
 
 	}
 	}, 10);
+	
+	
+});
+
+
+// Application ID, Javascript Key
+Parse.initialize("M7lfx2FsgvSMRr5pPVgpXM7lwxscDZ1oGQMfZe67", "04YFegY2SVyxpCXQz6HBFf0XQzwACId8johQKWxe");
+
+console.log("Testing Road Less Traveled");
+
+Parse.Cloud.run('getAirport', {query: "Nice"}, {
+	success: function(result) {
+		console.log("Success");
+		
+		var json = JSON.parse(result);
+		console.log(json.predictions[0].description+" has a place_id of "+json.predictions[0].place_id);
+	}
 });
