@@ -24,7 +24,7 @@ $('#inputForm').submit(function(ev) {
 		//begin injecting response into #flightList container
 		for(var i = 0;i < data.results.length; i++){
 			flight = data.results[i]
-			var fair = flight.fair.
+			//var fair = flight.fair.
 			html = 'yo';
 			$('#flightList').append(html);
 		}
