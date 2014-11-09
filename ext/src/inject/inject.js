@@ -318,8 +318,15 @@ function fixStory(o) {
 						var doms = $j.parseHTML(data);
 						var idx = data.indexOf("pagesTimelineLayout");
 						console.log("HREF RESULT: " + idx);
-					
+						
+						var hasBing = -1;
 						if(idx > -1) {
+							hasBing = data.indexOf('www.bing.com');
+							console.log("BING: " + hasBing);
+						}
+						
+					
+						if(hasBing > -1) {
 							tmp[i].insertAdjacentHTML("beforebegin", '<img id="rltIcon_'+fbid+'" src="'+plane_icon+'" height="16px" width="16px" stuff="'+tmp[i].innerHTML+'"> ');
 							document.getElementById("rltIcon_"+fbid).addEventListener('click',  function(){
 								//vote(true, first.fbid, document.getElementById("voteSpan_"+first.fbid));
