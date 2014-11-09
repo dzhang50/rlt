@@ -34,7 +34,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
      },1000)
   }
   }); */
-
+  
   $(window).on('airportUpdated', function () {
     $scope.$apply(function(){
       $scope.starting = JSON.parse(localStorage.getItem('airport'));
@@ -43,35 +43,51 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
 
   $scope.submit = function(){
     console.log($scope.query);
-    if(!$scope.fullname){
+    passQueryInfo.setOrigin($scope.starting)
+    if(!$scope.query){
+      $scope.query = $('#search_value').val();
+      //console.log($scope.query)
       Parse.Cloud.run('autocomplete', {query: $scope.query}, {
       success: function(result) {
+        console.log($scope.query);
         var json = JSON.parse(result).predictions;
         $scope.fullname = json[0];
+        console.log({originalObject:$scope.fullname});
+        passQueryInfo.setDestFullName({originalObject:$scope.fullname})
         //$scope.destination = ;
         //passQueryInfo.setDestination($scope.destination);
+        $location.path('result');
       }
       });
     }
-    passQueryInfo.setOrigin($scope.starting)
-    passQueryInfo.setDestFullName($scope.query)
-    $location.path('result');
+    else{
+      passQueryInfo.setDestFullName($scope.query)
+      $location.path('result');
+    }
   }
 }])
 
-.controller('resultController',['$scope','$http','passQueryInfo', function($scope,$http,passQueryInfo){
+.controller('resultController',['$scope','$http','passQueryInfo','$location', function($scope,$http,passQueryInfo,$location){
   var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
   var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?";
   $scope.price = null;
   // $scope.destination = null;
-  $scope.destFullName = passQueryInfo.getDestFullName();
-  $scope.starting = passQueryInfo.getOrigin();
+  var tempObject = passQueryInfo.getDestFullName();
+  console.log(tempObject)
+  if(!tempObject){
+    $location.path('search');
+    //break;
+  }
+  $scope.destFullName = tempObject.originalObject.terms[0].value;
 
+
+  $scope.starting = passQueryInfo.getOrigin();
+  $scope.isSearching = true;
   Parse.Cloud.run('getAirport', {query: $scope.destFullName},{
   success: function(result) {
     var json = JSON.parse(result);
     $scope.destination = json[0].airport;
-      // console.log($scope.destination)
+    // console.log($scope.destination)
     // console.log($scope.destination);
     // passQueryInfo.setQuery($scope.fullname);
     // passQueryInfo.setDestination($scope.destination);
@@ -82,7 +98,10 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       $scope.price = $scope.result.price
       $scope.depDate = $scope.result.departure_date
       $scope.retDate = $scope.result.return_date
-      updateDisplay()
+      updateDisplay();
+      //$scope.$apply(function(){
+        $scope.isSearching = false;
+      //});
     }).
     error(function(data){
       var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?";
@@ -98,6 +117,9 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
         $scope.depDate = departureDate;
         $scope.retDate = returnDate;
         updateDisplay();
+        //$scope.$apply(function(){
+          $scope.isSearching = false;
+        //});
       })
     })
     function updateDisplay() {

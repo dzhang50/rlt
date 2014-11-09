@@ -203,7 +203,7 @@ angular.module('angucomplete', [] )
                 }
                 $scope.searchStr = $scope.lastSearchTerm = result.title;
                 console.log(result.title);
-                $scope.selectedObject = $scope.searchStr;
+                $scope.selectedObject = result;
                 $scope.showDropdown = true;
                 $scope.results = [];
                 //$scope.$apply();
