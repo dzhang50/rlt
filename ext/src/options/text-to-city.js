@@ -7,24 +7,15 @@ $('#inputForm').submit(function(ev) {
 	ev.preventDefault();
   var title = $('#page-title').val();
   var body = $('#page-body').val();
+	function finish () {
+		$(window).trigger('destinationUpdated');
+	}
   text2city.find(db, title, body)
   .then(function (city) {
     console.log(city);
-    var latitude = city.lat;
-    var longitude = city.lng;
-  	var url = [BASE_URL,'apikey=',API_KEY,'&latitude=',latitude,'&longitude=',longitude];
-  	url = url.join('');
-  	console.log(url);
-  	$.ajax({url: url})
-  	.done(function( data ) {
-			if (data && data[0] && data[0].airport) {
-  			console.log('data', data);
-  			alert('Airport: '+data[0].airport_name + ' ('+data[0].airport+')');
-			} else {
-				alert('Airport not found');
-			}
-  	})
-    .error(console.log.bind(console));
-    alert("Are you talking about "+city.name+"? \n("+city.lng+", "+city.lat+")");
-  });
+		if (city && city.name) {
+			$('#destination').val(city.name);
+		}
+  })
+	.done(finish, finish);
 });
