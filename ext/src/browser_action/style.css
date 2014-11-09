@@ -2,12 +2,24 @@
 	padding: 10px;
 	height: 200px;
 	width: 400px;
-	font-family: Helvetica, Ubuntu, Arial, sans-serif;
 }
 h1 {
   text-align: center;
 	font-size: 2em;
 }
+
+
+/*h1, h2, h3, h4, h5, h6 {font-family: 'Noto Sans', sans-serif;}*/
+
+body {
+    background-color: #efefea;
+    line-height: 30px;
+    font-size: 16px;
+    /*font-family: 'Raleway', sans-serif;*/
+    /*font-family: 'Noto Sans' , sans-serif;*/
+    font-weight: 300;
+}
+
 
 a:link, a:visited {
   color: #89c;
@@ -24,6 +36,14 @@ a:link, a:visited {
 .search-form input[type=text] {
   font-size: 1.8em;
   text-align: left;
+  font-family: 'Roboto';
+  font-weight: 100;
+}
+
+#search_value {
+
+  font-family: 'Roboto';
+  font-weight: 100;
 }
 
 .footnote {
