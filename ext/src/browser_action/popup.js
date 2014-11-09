@@ -14,7 +14,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   $scope.query = null;
   $scope.starting = getCurrentAirport();
   $scope.fullname = null;
-
+  $scope.checked = null;
   /*$scope.$watch('query', function(){
     if(timer){
         $timeout.cancel(timer)
@@ -40,26 +40,76 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       $scope.starting = JSON.parse(localStorage.getItem('airport'));
     })
   });
+
+  /*
+    console.log($location.search().poi)
+    if($location.search('poi')){
+      $scope.$apply(function(){
+      $scope.query = $('#destination').val();
+      console.log($('#destination').val());
+      console.log("destination updated", $scope.query);
+      if($scope.query){
+        Parse.Cloud.run('autocomplete', {query: $scope.query}, {
+        success: function(result) {
+          console.log($scope.query);
+          var json = JSON.parse(result).predictions;
+          $scope.fullname = json[0];
+          console.log($scope.query);
+          console.log({originalObject:$scope.fullname});
+          passQueryInfo.setDestFullName({originalObject:$scope.fullname})
+          //$scope.destination = ;
+          //passQueryInfo.setDestination($scope.destination);
+          $location.path('result');
+        }
+        });
+      }
+      })
+    }
+*/
+
+  if($('#destination').val()){
+    $scope.$apply(function(){
+      $scope.query = $('#destination').val();
+      console.log($('#destination').val());
+      console.log("destination updated", $scope.query);
+      if($scope.query){
+        Parse.Cloud.run('autocomplete', {query: $scope.query}, {
+        success: function(result) {
+          console.log($scope.query);
+          var json = JSON.parse(result).predictions;
+          $scope.fullname = json[0];
+          console.log($scope.query);
+          console.log({originalObject:$scope.fullname});
+          passQueryInfo.setDestFullName({originalObject:$scope.fullname})
+          //$scope.destination = ;
+          //passQueryInfo.setDestination($scope.destination);
+          $location.path('result');
+        }
+        });
+      }
+    })
+  }
+
   $(window).on('destinationUpdated', function () {
     $scope.$apply(function(){
-      $scope.query = $('#destination').val());
-    
-      Parse.Cloud.run('autocomplete', {query: $scope.query}, {
-      success: function(result) {
-        console.log($scope.query);
-        var json = JSON.parse(result).predictions;
-        $scope.fullname = json[0];
-        console.log($scope.query);
-        console.log({originalObject:$scope.fullname});
-        passQueryInfo.setDestFullName({originalObject:$scope.fullname})
-        //$scope.destination = ;
-        //passQueryInfo.setDestination($scope.destination);
-        $location.path('result');
+      $scope.query = $('#destination').val();
+      console.log($('#destination').val());
+      console.log("destination updated", $scope.query);
+      if($scope.query){
+        Parse.Cloud.run('autocomplete', {query: $scope.query}, {
+        success: function(result) {
+          console.log($scope.query);
+          var json = JSON.parse(result).predictions;
+          $scope.fullname = json[0];
+          console.log($scope.query);
+          console.log({originalObject:$scope.fullname});
+          passQueryInfo.setDestFullName({originalObject:$scope.fullname})
+          //$scope.destination = ;
+          //passQueryInfo.setDestination($scope.destination);
+          $location.path('result');
+        }
+        });
       }
-      });
-
-
-
     })
   });
 
