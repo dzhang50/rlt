@@ -3,6 +3,7 @@ var $j = jQuery.noConflict();
 
 var plane_icon = chrome.extension.getURL('img/plane_mauve.png');
 var loading_icon = chrome.extension.getURL('js/modal/spinner.gif');
+var iframe_popup = chrome.extension.getURL('src/browser_action/browser_action.html');
 
 // Application ID, Javascript Key
 Parse.initialize("M7lfx2FsgvSMRr5pPVgpXM7lwxscDZ1oGQMfZe67", "04YFegY2SVyxpCXQz6HBFf0XQzwACId8johQKWxe");
@@ -347,7 +348,8 @@ function fixStory(o) {
 									console.log(json);
 									$j(".rlt_loading").hide();
 									$j(".rlt_results").show();
-									$j(".rlt_results").html(json[0].airport+": "+json[0].airport_name);
+									//$j(".rlt_results").html(json[0].airport+": "+json[0].airport_name);
+									$j(".rlt_results").html("<iframe src='"+iframe_popup+"' height='300px' width='500px' frameBorder='0'>");
 									
 									//alert(json[0].airport+": "+json[0].airport_name);
 									//console.log(json.result.geometry.location.lat+", "+json.result.geometry.location.lng);
@@ -461,5 +463,5 @@ bind(document,"DOMNodeInserted", function(e) { domnodeinserted(target(e)); });
 
 $j(document).ready(function() {
     //document.body.appendChild("<div class='ui basic modal'></div>");
-	$j("body").append('<div class="ui basic modal"><div class="rlt_loading"><img src="'+loading_icon+'"></div><div class="rlt_results"></div></div>');
+	$j("body").append('<div class="ui basic modal" style="width:500px; background-color: #efefea;"><div class="rlt_loading"><img src="'+loading_icon+'"></div><div class="rlt_results"></div></div>');
 });
