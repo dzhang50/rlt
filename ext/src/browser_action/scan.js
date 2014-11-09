@@ -22,24 +22,15 @@ chrome.tabs.executeScript(null, {
 
   var title = '';
   var body = text;
+	function finish () {
+		$(window).trigger('destinationUpdated');
+	}
   text2city.find(db, title, body)
   .then(function (city) {
     console.log(city);
-    var latitude = city.lat;
-    var longitude = city.lng;
-  	var url = [BASE_URL,'apikey=',API_KEY,'&latitude=',latitude,'&longitude=',longitude];
-  	url = url.join('');
-  	console.log(url);
-    console.log("Are you talking about "+city.name+"? \n("+city.lng+", "+city.lat+")");
-  	$.ajax({url: url})
-  	.done(function( data ) {
-			if (data && data[0] && data[0].airport) {
-  			console.log('data', data);
-  			console.log('Airport: '+data[0].airport_name + ' ('+data[0].airport+')');
-			} else {
-				console.log('Airport not found');
-			}
-  	})
-    .error(console.log.bind(console));
-  });
+		if (city && city.name) {
+			$('#destination').val(city.name);
+		}
+  })
+	.done(finish, finish);
 });

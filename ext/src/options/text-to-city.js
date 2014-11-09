@@ -13,7 +13,7 @@ $('#inputForm').submit(function(ev) {
   text2city.find(db, title, body)
   .then(function (city) {
     console.log(city);
-		if (city and city.name) {
+		if (city && city.name) {
 			$('#destination').val(city.name);
 		}
   })
