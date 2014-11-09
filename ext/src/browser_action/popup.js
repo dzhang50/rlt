@@ -58,7 +58,8 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
         $location.path('result');
       }
       });
-
+    });
+  });
   /*
     console.log($location.search().poi)
     if($location.search('poi')){
@@ -83,7 +84,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       }
       })
     }
-*/
+  */
 
   if($('#destination').val()){
     $scope.$apply(function(){
