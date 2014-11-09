@@ -238,8 +238,11 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       url = url.join('');
       console.log('hotel url', url)
       $http({method:"GET",url: url}).success(function(data){
-        console.log('hotel data', data)
-        $scope.hotelPrice = data.results[0].total_price.amount;
+        if (data.results.length > 0) {
+          $scope.hotelPrice = data.results[0].total_price.amount;
+        } else {
+          $scope.hotelPrice = 'No hotel information available';
+        }
         console.log('hotel price', $scope.hotelPrice)
       })
     };
@@ -253,8 +256,11 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
                  '&apikey=',API_KEY];
       url = url.join('');
       $http({method:"GET",url: url}).success(function(data){
-        console.log('car data', data)
-        $scope.carPrice = data.results[0].cars[0].estimated_total.amount;
+        if (data.results[0].cars.length > 0) {
+          $scope.carPrice = data.results[0].cars[0].estimated_total.amount;
+        } else {
+          $scope.carPrice = 'No car information available.';
+        }
         console.log('car price', $scope.carPrice)
       })
     };
@@ -270,15 +276,25 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       success(function(data){
         // console.log(data.CO2_economy / 40.0);
         // console.log('finished getting emissions info');
-        $scope.emissions = Math.round(data.CO2_economy / 41.0);
-      }).
-      error(function(data){
-        // console.log(data.CO2_economy / 40.0);
-        // console.log('finished getting emissions info');
-        $scope.emissions = 'No emissions information available.';
+        if (typeof(data.CO2_economy) == 'number') {
+          $scope.emissions = Math.round(data.CO2_economy / 41.0);
+        } else {
+          $scope.emissions = 'No emissions information available.';
+        }
       })
       console.log('emissions', $scope.emissions)
     };
+
+    function getBookingLink(start_date, end_date, origin, destination) {
+      var SS_BASE_URL = 'http://www.skyscanner.com/transport/flights/'
+      url = [SS_BASE_URL,
+             origin, '/',
+             destination, '/',
+             start_date.substring(2,2), start_date.substring(5,2), start_date.substring(7,2), '/',
+             end_date.substring(2,2), end_date.substring(5,2), end_date.substring(7,2), '/']
+      url = url.join('');
+      $scope.bookingLink = url;
+    }
 
     function updateDisplay() {
       var depDate = moment($scope.depDate)
