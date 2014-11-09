@@ -34,7 +34,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
      },1000)
   }
   }); */
-  
+
   $(window).on('airportUpdated', function () {
     $scope.$apply(function(){
       $scope.starting = JSON.parse(localStorage.getItem('airport'));
@@ -42,8 +42,8 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   });
   $(window).on('destinationUpdated', function () {
     $scope.$apply(function(){
-      $scope.query = $('#destination').val());
-    
+      $scope.query = $('#destination').val();
+
       Parse.Cloud.run('autocomplete', {query: $scope.query}, {
       success: function(result) {
         console.log($scope.query);
@@ -95,6 +95,9 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
   var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?";
   $scope.price = null;
+  $scope.hotelPrice = null;
+  $scope.carPrice = null;
+  $scope.emissions = null;
   // $scope.destination = null;
   var tempObject = passQueryInfo.getDestFullName();
   console.log(tempObject)
@@ -112,6 +115,8 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
     var json = JSON.parse(result);
     console.log(json);
     $scope.destination = json[0].airport;
+    $scope.destLat = json[0].location.latitude
+    $scope.destLon = json[0].location.longitude
     // console.log($scope.destination)
     // console.log($scope.destination);
     // passQueryInfo.setQuery($scope.fullname);
@@ -123,6 +128,9 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       $scope.price = $scope.result.price
       $scope.depDate = $scope.result.departure_date
       $scope.retDate = $scope.result.return_date
+      getHotelPrice($scope.depDate, $scope.retDate, $scope.destLat, $scope.destLon)
+      getCarPrice($scope.depDate, $scope.retDate, $scope.destination)
+      getEmissions($scope.starting.airport, $scope.destination)
       updateDisplay();
       //$scope.$apply(function(){
         $scope.isSearching = false;
@@ -141,12 +149,69 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
         $scope.price = $scope.result.fare.total_price;
         $scope.depDate = departureDate;
         $scope.retDate = returnDate;
+        getHotelPrice($scope.depDate, $scope.retDate, $scope.destLat, $scope.destLon)
+        getCarPrice($scope.depDate, $scope.retDate, $scope.destination)
+        getEmissions($scope.starting.airport, $scope.destination)
         updateDisplay();
         //$scope.$apply(function(){
           $scope.isSearching = false;
         //});
       })
     })
+    function getHotelPrice(start_date, end_date, latitude, longitude) {
+      var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/hotels/search-circle?";
+      var url = [BASE_URL,
+                 'check_in=', start_date,
+                 '&check_out=', end_date,
+                 '&latitude=', latitude,
+                 '&longitude=', longitude,
+                 '&radius=50',
+                 '&apikey=',API_KEY];
+      url = url.join('');
+      console.log('hotel url', url)
+      $http({method:"GET",url: url}).success(function(data){
+        console.log('hotel data', data)
+        $scope.hotelPrice = data.results[0].total_price.amount;
+        console.log('hotel price', $scope.hotelPrice)
+      })
+    };
+
+    function getCarPrice(start_date, end_date, location) {
+      var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/cars/search-airport?";
+      var url = [BASE_URL,
+                 'pick_up=', start_date,
+                 '&drop_off=', end_date,
+                 '&location=', location,
+                 '&apikey=',API_KEY];
+      url = url.join('');
+      $http({method:"GET",url: url}).success(function(data){
+        console.log('car data', data)
+        $scope.carPrice = data.results[0].cars[0].estimated_total.amount;
+        console.log('car price', $scope.carPrice)
+      })
+    };
+
+    function getEmissions(origin, destination) {
+      var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/CO2?";
+      var url = [BASE_URL,
+                 'origin=', origin,
+                 '&destination=',destination,
+                 '&apikey=',API_KEY];
+      url = url.join('');
+      $http({method:"GET",url: url}).
+      success(function(data){
+        // console.log(data.CO2_economy / 40.0);
+        // console.log('finished getting emissions info');
+        $scope.emissions = Math.round(data.CO2_economy / 41.0);
+      }).
+      error(function(data){
+        // console.log(data.CO2_economy / 40.0);
+        // console.log('finished getting emissions info');
+        $scope.emissions = 'No emissions information available.';
+      })
+      console.log('emissions', $scope.emissions)
+    };
+
     function updateDisplay() {
       var depDate = moment($scope.depDate)
       var retDate = moment($scope.retDate)
