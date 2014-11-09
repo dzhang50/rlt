@@ -1,5 +1,13 @@
 <div id="results-holder">
 	<h1>Travel to {{destFullName}}</h1>
+	<div ng-if="isSearching">
+		<div align="center">
+			<img src="spinner.gif">
+			<p>Loading Results...</p>
+		</div>
+	</div>
+	<div ng-if="!isSearching">
 	<p>Flights from {{starting.airport}} to {{destination}}: {{'$' + price}}</p>
 	<p>{{titleText}}</p>
+	</div>
 </div>
