@@ -13,7 +13,6 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   var timer=false;
   $scope.query = null;
   $scope.starting = getCurrentAirport();
-  $scope.destination = null;
   $scope.fullname = null;
 
   $scope.$watch('query', function(){
@@ -26,7 +25,6 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       success: function(result) {
         //console.log(result);
         var json = JSON.parse(result).predictions;
-        //console.log(result);
         $scope.fullname = json[0];
         //$scope.destination = ;
         console.log(json[0].terms[0].value);
@@ -45,84 +43,78 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
 
   $scope.submit = function(){
     console.log($scope.query);
-    if($scope.fullname){
-      Parse.Cloud.run('getAirport', {query: $scope.fullname.description},{
-      success: function(result) {
-        console.log($scope.destination);
-        var json = JSON.parse(result);
-        console.log(json);
-        $scope.destination = json[0].airport;
-        passQueryInfo.setQuery($scope.fullname);
-        passQueryInfo.setDestination($scope.destination);
-        $location.path('result');
-      }
-      });
-    }
-    else{
+    if(!$scope.fullname){
       Parse.Cloud.run('autocomplete', {query: $scope.query}, {
       success: function(result) {
-        //console.log(result);
         var json = JSON.parse(result).predictions;
-        //console.log(result);
         $scope.fullname = json[0];
         //$scope.destination = ;
         //passQueryInfo.setDestination($scope.destination);
       }
       });
-      Parse.Cloud.run('getAirport', {query: $scope.query},{
-      success: function(result) {
-        var json = JSON.parse(result);
-        $scope.destination = json[0].airport;
-        console.log($scope.destination);
-        passQueryInfo.setQuery($scope.fullname);
-        passQueryInfo.setDestination($scope.destination);
-        $location.path('result');
-      }
-      });
     }
+    passQueryInfo.setOrigin($scope.starting)
+    passQueryInfo.setDestFullName($scope.query)
+    $location.path('result');
   }
 }])
-
 
 .controller('resultController',['$scope','$http','passQueryInfo', function($scope,$http,passQueryInfo){
   var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
   var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?";
   $scope.price = null;
-  $scope.depDate = null;
-  $scope.retDate = null;
+  // $scope.destination = null;
+  $scope.destFullName = passQueryInfo.getDestFullName();
+  $scope.starting = passQueryInfo.getOrigin();
 
-
-  console.log("result");
-  $scope.starting = getCurrentAirport();
-  $scope.fullname = passQueryInfo.getQuery().terms[0].value;
-  $scope.destination = passQueryInfo.getDestination();
-
-  var url = [BASE_URL,"origin=",$scope.starting.airport,'&destination=',$scope.destination,'&duration=8&apikey=',API_KEY];
-  url = url.join('');
-  $http({method:"GET",url: url}).success(function(data){
-    console.log(data);
-    $scope.result = data.results[0]
-    $scope.price = $scope.result.price
-    $scope.depDate = $scope.result.departure_date
-    $scope.retDate = $scope.result.return_date
-  }).
-  error(function(data){
-    var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?";
-    var departureDate = moment().add(28, 'day').format("YYYY-MM-DD");
-    var returnDate = moment().add(35, 'day').format("YYYY-MM-DD");
-    var url = [BASE_URL,"origin=",$scope.starting.airport,'&destination=',$scope.destination,'&departure_date=',departureDate,'&return_date=',returnDate,'&number_of_results=1&apikey=',API_KEY];
+  Parse.Cloud.run('getAirport', {query: $scope.destFullName},{
+  success: function(result) {
+    var json = JSON.parse(result);
+    $scope.destination = json[0].airport;
+      // console.log($scope.destination)
+    // console.log($scope.destination);
+    // passQueryInfo.setQuery($scope.fullname);
+    // passQueryInfo.setDestination($scope.destination);
+    var url = [BASE_URL,"origin=",$scope.starting.airport,'&destination=',$scope.destination,'&duration=8&apikey=',API_KEY];
     url = url.join('');
-
     $http({method:"GET",url: url}).success(function(data){
-      console.log("SECOND")
-      console.log(data)
-      $scope.result = data.results[0];
-      $scope.price = $scope.result.fare.total_price;
-      $scope.depDate = departureDate;
-      $scope.retDate = returnDate;
+      $scope.result = data.results[0]
+      $scope.price = $scope.result.price
+      $scope.depDate = $scope.result.departure_date
+      $scope.retDate = $scope.result.return_date
+      updateDisplay()
+    }).
+    error(function(data){
+      var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?";
+      var departureDate = moment().add(28, 'day').format("YYYY-MM-DD");
+      var returnDate = moment().add(35, 'day').format("YYYY-MM-DD");
+      var url = [BASE_URL,"origin=",$scope.starting.airport,'&destination=',$scope.destination,'&departure_date=',departureDate,'&return_date=',returnDate,'&number_of_results=1&apikey=',API_KEY];
+      url = url.join('');
+
+      $http({method:"GET",url: url}).success(function(data){
+        console.log("SECOND")
+        $scope.result = data.results[0];
+        $scope.price = $scope.result.fare.total_price;
+        $scope.depDate = departureDate;
+        $scope.retDate = returnDate;
+        updateDisplay();
+      })
     })
+    function updateDisplay() {
+      var depDate = moment($scope.depDate)
+      var retDate = moment($scope.retDate)
+      var showReturnMonth = depDate.month() != retDate.month();
+      $scope.titleText = depDate.format('MMM '+(showReturnMonth ? 'Do' : 'D'));
+      $scope.titleText += ' - ';
+      $scope.titleText += retDate.format((showReturnMonth ? 'MMM ' : '')+'Do');
+    };
+  }
   });
 
+  console.log("result");
+  // $scope.starting = getCurrentAirport();
+  // $scope.fullname = passQueryInfo.getQuery().terms[0].value;
+  // $scope.destination = passQueryInfo.getDestination();
 }])
 
 
@@ -130,6 +122,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
 .service('passQueryInfo',[function() {
   var origin = null;
   var destination = null;
+  var dest_full_name = null;
   var query = null;
     return {
       setQuery: function(value){
@@ -149,6 +142,12 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       },
       setDestination:  function(value){
         destination = value;
+      },
+      getDestFullName:  function(){
+        return dest_full_name;
+      },
+      setDestFullName:  function(value){
+        dest_full_name = value;
       }
     }
 }]);
