@@ -11,7 +11,7 @@ $(document).ready(function() {
 		//get variables from form
 		var origin = $("#origin").val();
 		var destination = $("#destination").val();
-		
+
 		if(origin.length > 3 || destination.length > 3)
 		{
 			if(origin.length > 3){
