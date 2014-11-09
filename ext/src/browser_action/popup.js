@@ -7,46 +7,98 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
     $routeProvider.otherwise({redirectTo: '/search'});
 }])
 
-.controller('searchController',['$scope','$http','$location','passQueryInfo', function($scope,$http,$location,passQueryInfo){
-  $scope.query = "TEST";
+.controller('searchController',['$scope','$http','$location','passQueryInfo','$timeout', function($scope,$http,$location,passQueryInfo,$timeout){
+
+  Parse.initialize("M7lfx2FsgvSMRr5pPVgpXM7lwxscDZ1oGQMfZe67", "04YFegY2SVyxpCXQz6HBFf0XQzwACId8johQKWxe");
+  var timer=false;
+  $scope.query = null;
   $scope.starting = getCurrentAirport();
+  $scope.destination = null;
+
+  $scope.$watch('query', function(){
+    if(timer){
+        $timeout.cancel(timer)
+    }  
+    timer= $timeout(function(){
+      Parse.Cloud.run('getAirport', {query: $scope.query}, {
+      success: function(result) {
+        //console.log(result);
+        var json = JSON.parse(result);
+        console.log(json[0].airport);
+        $scope.destination = json[0].airport;
+        passQueryInfo.setDestination($scope.destination);
+      }
+  });
+     },2000)
+  });
 
   $(window).on('airportUpdated', function () {
     $scope.$apply(function(){
       $scope.starting = JSON.parse(localStorage.getItem('airport'));
     })
-  console.log($scope.starting);
-  //$('#originLoc').val(airport.airport);
-});
+    console.log($scope.starting);
+    //$('#originLoc').val(airport.airport);
+  });
 
   $scope.submit = function(){
     console.log($scope.query);
-    passQueryInfo.setQuery($scope.query);
-    console.log(passQueryInfo.getQuery());
-    $location.path('result');
+
+    Parse.Cloud.run('getAirport', {query: $scope.query},{
+      success: function(result) {
+        var json = JSON.parse(result);
+        $scope.destination = json[0].airport;
+        passQueryInfo.setDestination($scope.destination);
+        $location.path('result');
+      }
+    });
   }
 
 
   console.log("search");
 }])
 
+
 .controller('resultController',['$scope','$http','passQueryInfo', function($scope,$http,passQueryInfo){
+  var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
+  var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?";
+
   console.log("result");
   $scope.starting = getCurrentAirport();
-  $scope.query = passQueryInfo.getQuery();
+  $scope.destination = passQueryInfo.getDestination();
+
+  var url = [BASE_URL,"origin=",$scope.starting.airport,'&destination=',$scope.destination,'&duration=8&apikey=',API_KEY];
+  url = url.join('');
+  $http({method:"GET",url: url}).success(function(data){
+    console.log(data);
+    $scope.result = data.results[0];
+  });
+
+
 }])
 
+
+
 .service('passQueryInfo',[function() {
-  var query = null;
+  var origin = null;
+  var destination = null;
     return {
-      getQuery:  function(){
-        return query;
+      getOrigin:  function(){
+        return origin;
       },
-      setQuery:  function(value){
-        query = value;
+      setOrigin:  function(value){
+        origin = value;
+      },
+      getDestination:  function(){
+        return destination;
+      },
+      setDestination:  function(value){
+        destination = value;
       }
     }
 }]);
+
+
+
 //angular.module('ngApp.services', []);
 
 /*
