@@ -40,7 +40,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       $scope.starting = JSON.parse(localStorage.getItem('airport'));
     })
   });
-
+  passQueryInfo.setOrigin($scope.starting)
   $(window).on('destinationUpdated', function () {
     $scope.$apply(function(){
       $scope.query = $('#destination').val();
@@ -135,7 +135,6 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
 
   $scope.submit = function(){
     console.log($scope.query);
-    passQueryInfo.setOrigin($scope.starting)
     if(!$scope.query){
       $scope.query = $('#search_value').val();
       //console.log($scope.query)
