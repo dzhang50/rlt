@@ -2,6 +2,7 @@
 var $j = jQuery.noConflict();
 
 var plane_icon = chrome.extension.getURL('img/plane_mauve.png');
+var loading_icon = chrome.extension.getURL('js/modal/spinner.gif');
 
 // Application ID, Javascript Key
 Parse.initialize("M7lfx2FsgvSMRr5pPVgpXM7lwxscDZ1oGQMfZe67", "04YFegY2SVyxpCXQz6HBFf0XQzwACId8johQKWxe");
@@ -305,12 +306,13 @@ function fixStory(o) {
 			console.log(tmp[i].parentNode.innerHTML);
 			var contents = tmp[i].parentNode.innerHTML;
 			console.log(contents.indexOf(' at <a class="profileLink"'));
+			
+			
 			//console.log(innerText(tmp[i]));
 			if((contents.indexOf(' at ') > -1) ||
 			   (contents.indexOf(' in ') > -1)) {
 				//tmp[i].innerText += " TESTING 123 ";
 				console.log("HREF = "+tmp[i].href);
-				
 				$j.ajax({
 					url: tmp[i].href,
 					async: false,
@@ -321,17 +323,20 @@ function fixStory(o) {
 						
 						var hasBing = -1;
 						if(idx > -1) {
-							hasBing = data.indexOf('www.bing.com');
+							hasBing = data.indexOf('bing');
 							console.log("BING: " + hasBing);
 						}
 						
-					
+						
 						if(hasBing > -1) {
 							tmp[i].insertAdjacentHTML("beforebegin", '<img id="rltIcon_'+fbid+'" src="'+plane_icon+'" height="16px" width="16px" stuff="'+tmp[i].innerHTML+'"> ');
 							document.getElementById("rltIcon_"+fbid).addEventListener('click',  function(){
 								//vote(true, first.fbid, document.getElementById("voteSpan_"+first.fbid));
 								var stuff = document.getElementById("rltIcon_"+fbid).getAttribute("stuff");
 								
+								$j(".rlt_loading").show();
+								$j(".basic.modal").modal("show");
+								//tmp[i].insertAdjacentHTML("beforebegin", '$(".test.modal").modal("show");');
 								Parse.Cloud.run('getAirport', {query: stuff}, {
 									success: function(result) {
 									console.log("Success");
@@ -339,8 +344,11 @@ function fixStory(o) {
 									var json = JSON.parse(result);
 									console.log(json[0].airport);
 									console.log(json);
+									$j(".rlt_loading").hide();
+									$j(".rlt_results").show();
+									$j(".rlt_results").html(json[0].airport+": "+json[0].airport_name);
 									
-									alert(json[0].airport+": "+json[0].airport_name);
+									//alert(json[0].airport+": "+json[0].airport_name);
 									//console.log(json.result.geometry.location.lat+", "+json.result.geometry.location.lng);
 									//console.log(json.predictions[0].description+" has a place_id of "+json.predictions[0].place_id);
 									}
@@ -450,3 +458,7 @@ var domnodeinserted = function (o) {
 
 bind(document,"DOMNodeInserted", function(e) { domnodeinserted(target(e)); });
 
+$j(document).ready(function() {
+    //document.body.appendChild("<div class='ui basic modal'></div>");
+	$j("body").append('<div class="ui basic modal"><div class="rlt_loading"><img src="'+loading_icon+'"></div><div class="rlt_results"></div></div>');
+});

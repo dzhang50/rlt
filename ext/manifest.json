@@ -39,10 +39,14 @@
     ],
       "js": [
         "js/jquery/dist/jquery.min.js",
+		"js/modal/jquery.modal.min.js",
 		"js/parse/parse-1.3.0.min.js",
         "src/inject/inject.js"
-      ]
+      ],
+	  "css": [
+		"js/modal/jquery.modal.css"
+		]
     }
   ],
-  "web_accessible_resources": ["js/jquery/dist/jquery.min.js", "js/jquery/dist/jquery.min.map", "img/plane_mauve.png"]
+  "web_accessible_resources": ["js/jquery/dist/jquery.min.js", "js/jquery/dist/jquery.min.map", "img/plane_mauve.png", "js/modal/spinner.gif"]
 }
