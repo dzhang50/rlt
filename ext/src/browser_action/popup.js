@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngApp', ['ngRoute']).
+angular.module('ngApp', ['ngRoute',"angucomplete"]).
 config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider) {
     $routeProvider.when('/search', {templateUrl: 'search.html', controller: 'searchController'});
     $routeProvider.when('/result', {templateUrl: 'results.html', controller: 'resultController'});

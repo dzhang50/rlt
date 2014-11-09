@@ -9,6 +9,7 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
+  "content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline'",
   "default_locale": "en",
   "background": {
     "scripts": [

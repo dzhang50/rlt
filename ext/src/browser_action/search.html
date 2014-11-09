@@ -1,7 +1,17 @@
 <div id="form-holder">
 	<h1>Where do you want to go?</h1>
 	<form class="popup-form search-form" ng-submit="submit()">
-		<input id="search-query" ng-model="query" type="text" placeholder=" insert city here" />
+		<!-- <input id="search-query" ng-model="query" type="text" placeholder=" insert city here" /> -->
+
+		<angucomplete id="search"
+              placeholder="Insert City Here"
+              pause="400"
+              selectedobject="query"
+              url="http://myserver.com/api/user/find?s="
+              datafield="predictions"
+              titlefield="description"
+              inputclass="form-control form-control-small"/>
+
 		<p class='footnote'>Searching for flights from {{starting.airport}}<span class="origin"></span> (<a href="#">change</a>)</p>
 	</form>
 </div>
