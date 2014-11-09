@@ -47,5 +47,5 @@
 		]
     }
   ],
-  "web_accessible_resources": ["js/jquery/dist/jquery.min.js", "js/jquery/dist/jquery.min.map", "img/plane_mauve.png", "js/modal/spinner.gif"]
+  "web_accessible_resources": ["js/jquery/dist/jquery.min.js", "js/jquery/dist/jquery.min.map", "img/plane_mauve.png", "js/modal/spinner.gif", "src/browser_action/browser_action.html"]
 }
