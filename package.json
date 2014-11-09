@@ -1,0 +1,20 @@
+{
+  "name": "rlt",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dzhang50/rlt.git"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/dzhang50/rlt",
+  "dependencies": {
+    "diacritics": "^1.2.1",
+    "gulp": "^3.8.10",
+    "gulp-browserify": "^0.5.0",
+    "gulp-rename": "^1.2.0",
+    "lodash": "^2.4.1",
+    "natural": "^0.1.28",
+    "remove": "^0.1.5",
+    "when": "^3.6.0"
+  }
+}
