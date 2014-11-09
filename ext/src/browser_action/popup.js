@@ -40,6 +40,29 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       $scope.starting = JSON.parse(localStorage.getItem('airport'));
     })
   });
+  $(window).on('destinationUpdated', function () {
+    $scope.$apply(function(){
+      $scope.query = $('#destination').val());
+    
+      Parse.Cloud.run('autocomplete', {query: $scope.query}, {
+      success: function(result) {
+        console.log($scope.query);
+        var json = JSON.parse(result).predictions;
+        $scope.fullname = json[0];
+        console.log($scope.query);
+        console.log({originalObject:$scope.fullname});
+        passQueryInfo.setDestFullName({originalObject:$scope.fullname})
+        //$scope.destination = ;
+        //passQueryInfo.setDestination($scope.destination);
+        $location.path('result');
+      }
+      });
+
+
+
+    })
+  });
+
 
   $scope.submit = function(){
     console.log($scope.query);
@@ -52,6 +75,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
         console.log($scope.query);
         var json = JSON.parse(result).predictions;
         $scope.fullname = json[0];
+        console.log($scope.query);
         console.log({originalObject:$scope.fullname});
         passQueryInfo.setDestFullName({originalObject:$scope.fullname})
         //$scope.destination = ;
@@ -86,6 +110,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   Parse.Cloud.run('getAirport', {query: $scope.destFullName},{
   success: function(result) {
     var json = JSON.parse(result);
+    console.log(json);
     $scope.destination = json[0].airport;
     // console.log($scope.destination)
     // console.log($scope.destination);
