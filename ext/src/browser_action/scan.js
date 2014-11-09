@@ -1,6 +1,9 @@
 chrome.tabs.executeScript(null, {
-  code: 'JSON.stringify([document.title, document.body.innerHTML]);'
+  code: 'JSON.stringify([document.title, document.body.innerHTML, window.location]);'
 }, function (arrayOfResults) {
+	function finish () {
+		$(window).trigger('destinationUpdated');
+	}
   if (!arrayOfResults || !arrayOfResults[0]) {
     return;
   }
@@ -9,10 +12,14 @@ chrome.tabs.executeScript(null, {
     var json = JSON.parse(arrayOfResults[0]);
     title = json[0];
     var rawHTML = json[1];
+    if (/facebook/.test(json[2])) {
+      return finish();
+    }
     rawHTML = rawHTML.replace(/<script.*\/script>/gi, '');
     var r = new Readability(rawHTML, {});
   } catch (ex) {
-    return console.log(ex);
+    console.log(ex);
+    return finish();
   }
   var div = document.createElement('div');
   window.r = r;
@@ -28,9 +35,6 @@ chrome.tabs.executeScript(null, {
   var db = text2city.db('./data');
 
   var body = text;
-	function finish () {
-		$(window).trigger('destinationUpdated');
-	}
   text2city.find(db, title, body)
   .then(function (city) {
     console.log(city);
