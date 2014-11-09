@@ -11,7 +11,7 @@ Parse.Cloud.define("autocomplete", function(request, response) {
 	
 	// POI -> Google Place
 	Parse.Cloud.httpRequest({
-		url: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+query+"&key="+apiKey,
+		url: "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+query+"&key="+apiKey,
 		success: function(httpResponse) {
 			response.success(httpResponse.text);
 		},
@@ -30,9 +30,11 @@ Parse.Cloud.define("getAirport", function(request, response) {
 	
 	// POI -> Google place_id
 	Parse.Cloud.httpRequest({
-		url: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+query+"&key="+googKey,
+		url: "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+query+"&key="+googKey,
 		success: function(httpResponse) {
 			var json = JSON.parse(httpResponse.text);
+			console.log("https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+query+"&key="+googKey);
+			//console.log(json);
 			console.log(json.predictions[0].description+" has a place_id of "+json.predictions[0].place_id);
 			
 			var placeid = json.predictions[0].place_id;
