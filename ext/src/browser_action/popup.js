@@ -25,7 +25,6 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       success: function(result) {
         //console.log(result);
         var json = JSON.parse(result).predictions;
-        //console.log(result);
         $scope.fullname = json[0];
         //$scope.destination = ;
         console.log(json[0].terms[0].value);
@@ -47,9 +46,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
     if(!$scope.fullname){
       Parse.Cloud.run('autocomplete', {query: $scope.query}, {
       success: function(result) {
-        //console.log(result);
         var json = JSON.parse(result).predictions;
-        //console.log(result);
         $scope.fullname = json[0];
         //$scope.destination = ;
         //passQueryInfo.setDestination($scope.destination);
@@ -66,8 +63,6 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   var API_KEY = "DahDhyNAdiEw4JgwwiiG7FZG9qke7Sm9";
   var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?";
   $scope.price = null;
-  $scope.depDate = null;
-  $scope.retDate = null;
   // $scope.destination = null;
   $scope.destFullName = passQueryInfo.getDestFullName();
   $scope.starting = passQueryInfo.getOrigin();
@@ -75,20 +70,19 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   Parse.Cloud.run('getAirport', {query: $scope.destFullName},{
   success: function(result) {
     var json = JSON.parse(result);
-    console.log(json);
     $scope.destination = json[0].airport;
       // console.log($scope.destination)
     // console.log($scope.destination);
     // passQueryInfo.setQuery($scope.fullname);
-    passQueryInfo.setDestination($scope.destination);
+    // passQueryInfo.setDestination($scope.destination);
     var url = [BASE_URL,"origin=",$scope.starting.airport,'&destination=',$scope.destination,'&duration=8&apikey=',API_KEY];
     url = url.join('');
     $http({method:"GET",url: url}).success(function(data){
-      console.log(data);
       $scope.result = data.results[0]
       $scope.price = $scope.result.price
       $scope.depDate = $scope.result.departure_date
       $scope.retDate = $scope.result.return_date
+      updateDisplay()
     }).
     error(function(data){
       var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?";
@@ -99,13 +93,21 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
 
       $http({method:"GET",url: url}).success(function(data){
         console.log("SECOND")
-        console.log(data)
         $scope.result = data.results[0];
         $scope.price = $scope.result.fare.total_price;
         $scope.depDate = departureDate;
         $scope.retDate = returnDate;
+        updateDisplay();
       })
-    });
+    })
+    function updateDisplay() {
+      var depDate = moment($scope.depDate)
+      var retDate = moment($scope.retDate)
+      var showReturnMonth = depDate.month() != retDate.month();
+      $scope.titleText = depDate.format('MMM '+(showReturnMonth ? 'Do' : 'D'));
+      $scope.titleText += ' - ';
+      $scope.titleText += retDate.format((showReturnMonth ? 'MMM ' : '')+'Do');
+    };
   }
   });
 

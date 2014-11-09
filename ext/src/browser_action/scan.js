@@ -4,7 +4,7 @@ chrome.tabs.executeScript(null, {
   try {
     var r = new Readability(arrayOfResults[0], {});
   } catch (ex) {
-    return console.error(ex.stack);
+    return console.log(ex);
   }
   var div = document.createElement('div');
   div.innerHTML = r.getContent(true);
