@@ -334,6 +334,7 @@ function fixStory(o) {
 								//vote(true, first.fbid, document.getElementById("voteSpan_"+first.fbid));
 								var stuff = document.getElementById("rltIcon_"+fbid).getAttribute("stuff");
 								
+								$j(".rlt_results").hide();
 								$j(".rlt_loading").show();
 								$j(".basic.modal").modal("show");
 								//tmp[i].insertAdjacentHTML("beforebegin", '$(".test.modal").modal("show");');
