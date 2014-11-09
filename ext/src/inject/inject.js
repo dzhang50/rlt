@@ -335,10 +335,12 @@ function fixStory(o) {
 								//vote(true, first.fbid, document.getElementById("voteSpan_"+first.fbid));
 								var stuff = document.getElementById("rltIcon_"+fbid).getAttribute("stuff");
 								
-								$j(".rlt_results").hide();
 								$j(".rlt_loading").show();
+								$j(".rlt_results").hide();
 								$j(".basic.modal").modal("show");
 								//tmp[i].insertAdjacentHTML("beforebegin", '$(".test.modal").modal("show");');
+								
+								
 								Parse.Cloud.run('getAirport', {query: stuff}, {
 									success: function(result) {
 									console.log("Success");
@@ -348,14 +350,18 @@ function fixStory(o) {
 									console.log(json);
 									$j(".rlt_loading").hide();
 									$j(".rlt_results").show();
-									//$j(".rlt_results").html(json[0].airport+": "+json[0].airport_name);
-									$j(".rlt_results").html("<iframe src='"+iframe_popup+"' height='300px' width='500px' frameBorder='0'>");
+									$j(".rlt_results").html(json[0].airport+": "+json[0].airport_name);
+									//$j(".rlt_results").html("<iframe src='"+iframe_popup+"' height='300px' width='500px' frameBorder='0'>");
 									
 									//alert(json[0].airport+": "+json[0].airport_name);
 									//console.log(json.result.geometry.location.lat+", "+json.result.geometry.location.lng);
 									//console.log(json.predictions[0].description+" has a place_id of "+json.predictions[0].place_id);
 									}
 								});
+								
+								
+								//$j(".rlt_results").html("<iframe src='"+iframe_popup+"' height='300px' width='500px' frameBorder='0'>");
+								
 							});
 							//console.log(tmp[i]);
 						}
