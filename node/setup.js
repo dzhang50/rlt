@@ -1,6 +1,9 @@
 var fs = require('fs');
+var path = require('path');
 var _ = require('lodash');
 var optimist = require('optimist');
+var Promise = require('when');
+var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var levelup = require('levelup');
 var cities1000 = require('cities1000');
@@ -32,15 +35,15 @@ function saveCity (city) {
   names = _.map(names, function (name) {
     return name.toLowerCase();
   });
-  var obj = {
-    id: city.id,
-    name: city.name,
-    region: city.adminCode,
-    country: city.country,
-    pop: parseInt(city.population),
-    lat: parseFloat(city.lat),
-    lng: parseFloat(city.lon)
-  };
+
+  var obj = [
+    city.name,
+    city.adminCode,
+    city.country,
+    parseInt(city.population),
+    parseFloat(city.lat),
+    parseFloat(city.lon)
+  ];
   db.put(id, obj, function (err) {
     if (err) console.error(err);
   });
@@ -76,8 +79,75 @@ function setup () {
   });
 }
 
+function exportData () {
+  db = levelup(dbDir, {valueEncoding: 'json'});
+  console.log('exporting');
+  var prefixString = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var prefixes = [];
+  var promises = [];
+  var dir = path.join(__dirname, args.o);
+  mkdirp(dir, function (err) {
+    for (var i=0; i<prefixString.length; i++) {
+      for (var j=0; j<prefixString.length; j++) {
+        var prefix = prefixString.charAt(i) + prefixString.charAt(j);
+        //console.log('prefix', prefix);
+        promises.push(exportPrefix(db, prefix));
+      }
+    }
+    Promise.all(promises)
+    .then(function (results) {
+      console.log('done!');
+    });
+  });
+}
+
+function exportPrefix (db, prefix) {
+  var deferred = Promise.defer();
+  var end = prefix.substring(0, prefix.length-1);
+  end += String.fromCharCode(prefix.charCodeAt(prefix.length-1)+1);
+  var options = {
+    start: prefix,
+    end: end
+  };
+  console.log(options);
+  var items = {};
+  var any = false;
+  db.createReadStream(options)
+  .on('data', function (item) {
+    any = true;
+    var key = item.key.split(':')[0];
+    if (typeof item.value == 'string') {
+      if (items[key]) {
+        items[key] += ',';
+      } else {
+        items[key] = '';
+      }
+      items[key] += item.value;
+    } else {
+      items[key] = items[key] || [];
+      items[key].push(item.value);
+    }
+  })
+  .on('end', function () {
+    if (!any) {
+      return deferred.resolve();
+    }
+    var fileName = path.join(__dirname, args.o, prefix + '.json');
+    var content = JSON.stringify(items);
+    fs.writeFile(fileName, content, function (err) {
+      if (err) {
+        return deferred.reject(err);
+      }
+      deferred.resolve();
+    })
+  });
+  return deferred.promise;
+}
+
 if (args.clear) {
   clear();
+} else if (args.export && args.o) {
+  exportData();
 } else {
   setup();
 }

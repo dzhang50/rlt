@@ -7,7 +7,8 @@ var levelPromise = require('../levelPromise');
 global.Should = require('should');
 
 before(function (done) {
-  this.db = levelPromise(db);
+  //this.db = levelPromise(db);
+  this.db = levelPromise(path.resolve(__dirname, '../export/'));
   var fixturesPath = path.resolve(__dirname, './fixtures');
   var fixtures;
   this.fixtures = fixtures = {};
