@@ -1,15 +1,22 @@
 chrome.tabs.executeScript(null, {
-  code: 'document.body.innerHTML;'
+  code: 'JSON.stringify([document.title, document.body.innerHTML]);'
 }, function (arrayOfResults) {
   if (!arrayOfResults || !arrayOfResults[0]) {
     return;
   }
+  var title;
   try {
-    var r = new Readability(arrayOfResults[0], {});
+    var json = JSON.parse(arrayOfResults[0]);
+    title = json[0];
+    var rawHTML = json[1];
+    rawHTML = rawHTML.replace(/<script.*\/script>/gi, '');
+    var r = new Readability(rawHTML, {});
   } catch (ex) {
     return console.log(ex);
   }
   var div = document.createElement('div');
+  window.r = r;
+  window.docTitle = title;
   div.innerHTML = r.getContent(true);
   var text = div.innerText;
   text = text.replace(/^\s+|\s+$/g, '');
@@ -20,7 +27,6 @@ chrome.tabs.executeScript(null, {
 
   var db = text2city.db('./data');
 
-  var title = '';
   var body = text;
 	function finish () {
 		$(window).trigger('destinationUpdated');
