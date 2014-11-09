@@ -1,7 +1,6 @@
 var currentLocation = {};
 
-/*
-airport = {
+var BOS = {
     "airport": "BOS",
     "airport_name": "General Edward Lawrence Logan International Airport",
     "city": "BOS",
@@ -13,9 +12,11 @@ airport = {
     },
     "aircraft_movements": 143466,
     "timezone": "America/New_York"
-  }
-*/
+  };
 
+console.log('locationOverride');
+localStorage.setItem('airport', JSON.stringify(BOS));
+localStorage.setItem('locationOverride', true);
 
 function locationOverride () {
   var override = localStorage.getItem('locationOverride');
