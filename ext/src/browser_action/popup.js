@@ -19,7 +19,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   $scope.$watch('query', function(){
     if(timer){
         $timeout.cancel(timer)
-    } 
+    }
     if($scope.query){
     timer= $timeout(function(){
       Parse.Cloud.run('autocomplete', {query: $scope.query}, {
@@ -101,6 +101,10 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   url = url.join('');
   $http({method:"GET",url: url}).success(function(data){
     console.log(data);
+    $scope.result = data.results[0]
+    $scope.price = $scope.result.price
+    $scope.depDate = $scope.result.departure_date
+    $scope.retDate = $scope.result.return_date
   }).
   error(function(data){
     var BASE_URL = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?";
@@ -115,8 +119,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       $scope.result = data.results[0];
       $scope.price = $scope.result.fare.total_price;
       $scope.depDate = departureDate;
-      $scope.reDate = returnDate;
-      $scope.result = data.results[0];
+      $scope.retDate = returnDate;
     })
   });
 
