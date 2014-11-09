@@ -277,7 +277,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
         // console.log(data.CO2_economy / 40.0);
         // console.log('finished getting emissions info');
         if (typeof(data.CO2_economy) == 'number') {
-          $scope.emissions = Math.round(data.CO2_economy / 41.0);
+          $scope.emissions = Math.round(data.CO2_economy / 20.5);
         } else {
           $scope.emissions = 'No emissions information available.';
         }
