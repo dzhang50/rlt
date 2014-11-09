@@ -157,7 +157,7 @@ angular.module('angucomplete', [] )
 
             $scope.hideResults = function() {
                 $scope.hideTimer = $timeout(function() {
-                    $scope.showDropdown = false;
+                    $scope.showDropdown = true;
                 }, $scope.pause);
             };
 
@@ -174,7 +174,7 @@ angular.module('angucomplete', [] )
             $scope.keyPressed = function(event) {
                 if (!(event.which == 38 || event.which == 40 || event.which == 13)) {
                     if (!$scope.searchStr || $scope.searchStr == "") {
-                        $scope.showDropdown = false;
+                        $scope.showDropdown = true;
                         $scope.lastSearchTerm = null
                     } else if (isNewSearchNeeded($scope.searchStr, $scope.lastSearchTerm)) {
                         $scope.lastSearchTerm = $scope.searchStr
@@ -202,8 +202,9 @@ angular.module('angucomplete', [] )
                     result.title = result.title.toString().replace(/(<([^>]+)>)/ig, '');
                 }
                 $scope.searchStr = $scope.lastSearchTerm = result.title;
-                $scope.selectedObject = result;
-                $scope.showDropdown = false;
+                console.log(result.title);
+                $scope.selectedObject = $scope.searchStr;
+                $scope.showDropdown = true;
                 $scope.results = [];
                 //$scope.$apply();
             }
@@ -245,7 +246,7 @@ angular.module('angucomplete', [] )
 
                 } else if (event.which == 27) {
                     $scope.results = [];
-                    $scope.showDropdown = false;
+                    $scope.showDropdown = true;
                     $scope.$apply();
                 } else if (event.which == 8) {
                     $scope.selectedObject = null;

@@ -15,7 +15,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
   $scope.starting = getCurrentAirport();
   $scope.fullname = null;
 
-  $scope.$watch('query', function(){
+  /*$scope.$watch('query', function(){
     if(timer){
         $timeout.cancel(timer)
     }
@@ -33,7 +33,7 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
       });
      },1000)
   }
-  });
+  }); */
 
   $(window).on('airportUpdated', function () {
     $scope.$apply(function(){
