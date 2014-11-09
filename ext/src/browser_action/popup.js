@@ -66,7 +66,6 @@ config(['$routeProvider','$httpProvider', function($routeProvider,$httpProvider)
         //console.log(result);
         $scope.fullname = json[0];
         //$scope.destination = ;
-        console.log(json[0].terms[0].value);
         //passQueryInfo.setDestination($scope.destination);
       }
       });
